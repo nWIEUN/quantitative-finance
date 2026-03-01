@@ -1,3 +1,4 @@
-this repository is created for personal exercises about some quantitative-financial projects, which will use python as the main language. my projects will include some machine learning, reinforcement learning but also some basic supervised and unsupervisedlearning models based on real data developed by the team which I've joined, mainly focused on financial engineering.
-the main target of this repository is to show some skills I've grasped important in q-f field, more like a foundation for my future career.
-thanks for watching and always waiting for suggestions！
+the data is from the team's data source which is got from tushare. However, considering the limited qualification, I can only use part of the data, which may cause some mistakes or errors in my results.
+tips:
+1.pe and pe_ttm are 0 when they are negative.
+2.roic is matched by my own, everyone can have a look at my code to get the logic behind the choice of data.
