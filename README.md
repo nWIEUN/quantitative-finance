@@ -1,3 +1,12 @@
-this repository is created for personal exercises about some quantitative-financial projects, which will use python as the main language. my projects will include some machine learning, reinforcement learning but also some basic supervised and unsupervisedlearning models based on real data developed by the team which I've joined, mainly focused on financial engineering.
-the main target of this repository is to show some skills I've grasped important in q-f field, more like a foundation for my future career.
-thanks for watching and always waiting for suggestions！
+基于离散数字信号的金融时序降噪构建动量增强因子：
+此项目的大致流程如下，可以在复现之前了解我的大致思路
+此外所有的数据我都开源在data中，可以自行下载
+基于离散数字信号的金融时序降噪构建动量增强因子
+项目流程：
+1.	选取数据：首先选取沪深300指数权重排名前20位的股票三年数据（流动性好，没有停牌问题）
+2.	数据处理：先统计数据的特征：波动率、偏度、峰度、噪声信号比等；其次对不同的股票数据的噪声等级进行评分：40%波动率、30%峰度、20%极端值、10%波动聚集，从高到低排序，每1/3分为一个组，分三个组：高噪声组、中噪声组和低噪声组，对每一个组每一只股票的噪声特征进行自适应的滤波器（低通滤波器，保留低频趋势）参数设置：<1>截止频率：高噪声组base设置在40，通过每一只股票与所在噪声组的平均波动率比值确定具体的截止频率；中噪声组base设为30，低噪声组设为20；<2>滤波器阶数：峰度越高，股票极端值越多、噪声越强，分配更高阶数，用陡峭滤波彻底滤除噪声，自相关系数高（趋势性强）的股票，降低阶数，避免过度滤波破坏趋势；<3>截止频率：周期的倒数；<4>滤波器类型：巴特沃斯：平坦温和，最适合去噪+保趋势；切比雪夫I：陡峭干脆，适合噪声小但要快速过滤。零相位滤波，双向操作防止失真。
+3.	对过滤后的数据进行评估：降噪率、趋势保留度 、平滑度比例、能量保留比例，同步绘图。
+4.	构建因子：分子：滤波后价格的动量（周期选择60日），分母：噪声强度（残差的滚动波动率，60日残差的标准差），此时因子值高 = 趋势强 + 噪声低 = 高质量买入信号。将每一只股票都通过这个数据记录相应的因子值，包括原始价格、滤波后的价格、增强后的因子值、过滤后的动量、原始动量以及噪声强度。
+5.	因子结果测试：单个因子的IC值、多空收益、多头胜率以及换手率的对比。IC值计算因子值和收益率（未来5日）的相关系数；多头胜率计算买入因子值最大的股票的收益率；多空收益计算同时做多因子值大的股票，做空因子值小的股票的收益率；换手率比较调仓的频率。
+6.	在上面的基础上对沪深300全体股票进行测试，观察因子表现效果；表现较佳，对全体A股市场进行测试，但和沪深300不同，需要对行业和市值做中性化处理，避免收益率虚高（行业和市值的中性化主要集中在数据处理和因子的构建两方面的修改，数据方面通过线性回归，除去这两者的影响，主要用于噪声特征的提取，因子构建方面同样对因子值进行二者的线性回归，除去二者的影响，留下纯净的因子）。
+7.	同时考虑到噪声评分是自主设置的指标，包括分组也是直接均分，所以考虑使用随机森林模型进行评分，K-means聚类算法进行分组，进一步智能化。
